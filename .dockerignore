@@ -1,0 +1,21 @@
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+env-hybridrag/
+.venv/
+
+# Ignore temporary files
+temp/
+
+# Ignore IDE settings
+.vscode/
+
+# Ignore environment variables
+.env
+
+# Ignore log files
+*.log
