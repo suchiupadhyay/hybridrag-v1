@@ -7,5 +7,5 @@ nltk
 rank-bm25
 google-generativeai==0.5.1
 python-dotenv==0.21.0
-fastapi==0.116.2
-uvicorn==0.35.0
+fastapi
+uvicorn[standard]
