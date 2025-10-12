@@ -39,7 +39,8 @@ async def query_endpoint(request: Request):
     print("Answer sent back:", answer)  # log before sending response
     return {"answer": answer}
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))  # Railway provides a dynamic port
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+## run locally with python main.py ... 
+# if __name__ == "__main__":
+#     port = int(os.environ.get("PORT", 8000))  # Railway provides a dynamic port
+#     uvicorn.run("main:app", host="0.0.0.0", port=8000)
 
