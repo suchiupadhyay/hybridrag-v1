@@ -22,6 +22,11 @@ print("Redis PING response:", pong)
 
 app = FastAPI()
 
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello from Railway"}
+
 @app.post("/query")
 async def query_endpoint(request: Request):
     data = await request.json()
