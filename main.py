@@ -1,11 +1,11 @@
 ## lightweight FastAPI app that imports hybridrag.py functions and exposes HTTP endpoints
 
 from fastapi import FastAPI, Request
+import uvicorn
+import os
 from hybridRAG_withRedis import rag_with_cache  # your core logic
 import os
 import redis
-
-app = FastAPI()
 
 # Setup Redis client (or pass it into your functions)
 redis_client = redis.Redis(
@@ -20,6 +20,8 @@ pong = redis_client.ping()
 print("Redis PING response:", pong)
 
 
+app = FastAPI()
+
 @app.post("/query")
 async def query_endpoint(request: Request):
     data = await request.json()
@@ -27,8 +29,12 @@ async def query_endpoint(request: Request):
     if not query:
         return {"error": "No query provided"}
 
-
     # Call your function with redis_client injected or global
     answer = rag_with_cache(query, redis_client=redis_client)
     print("Answer sent back:", answer)  # log before sending response
     return {"answer": answer}
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))  # Railway provides a dynamic port
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+
