@@ -62,7 +62,6 @@ if GOOGLE_API_KEY is None:
 # Configure the Generative AI library with the API key
 else:
     genai.configure(api_key=GOOGLE_API_KEY)
-    print("🔑 Gemini API Key (partial):", GOOGLE_API_KEY[:8])  
     print("api key configured")
 
 
