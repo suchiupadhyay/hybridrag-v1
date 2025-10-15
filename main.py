@@ -79,6 +79,7 @@ async def receive_whatsapp_message(request: Request):
 
         # Generate RAG answer
         answer = rag_with_cache(user_message, redis_client=redis_client)
+        print("Answer from rag_with_cache : ", answer)
 
         # Prepare reply payload
         send_url = f"{WHATSAPP_API_URL}/{phone_number_id}/messages"
