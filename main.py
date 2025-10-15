@@ -23,7 +23,7 @@ print("Redis PING response:", pong)
 
 
 VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN")
-WHATSAPP_API_URL = "https://graph.facebook.com/v24.0"
+WHATSAPP_API_URL = "https://graph.facebook.com/v18.0"
 
 app = FastAPI()
 
