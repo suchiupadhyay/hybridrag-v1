@@ -7,6 +7,7 @@ import os
 from hybridRAG_withRedis import rag_with_cache  # your core logic
 import os
 import redis
+import httpx
 
 # Setup Redis client (or pass it into your functions)
 redis_client = redis.Redis(
@@ -22,6 +23,7 @@ print("Redis PING response:", pong)
 
 
 VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN")
+WHATSAPP_API_URL = "https://graph.facebook.com/v24.0"
 
 app = FastAPI()
 
@@ -46,7 +48,7 @@ async def verify_webhook(request: Request):
         return PlainTextResponse(content="Verification failed", status_code=403)
 
 
-
+## root /  and query - RAG chatbot standalone endpoints...setup upto Railway  deployment
 @app.get("/")
 def read_root():
     return {"message": "Hello from Railway"}
@@ -68,11 +70,60 @@ async def query_endpoint(request: Request):
 # WhatsApp will send POST requests here whenever a user sends you a message.
 # You can extract the message from the payload and trigger your RAG logic or auto-response.
 
+## Full POST handle
 @app.post("/webhook")
 async def receive_whatsapp_message(request: Request):
     data = await request.json()
-    print("📩 Incoming WhatsApp message:", data)
-    return {"status": "received"}
+    print("📩 Incoming WhatsApp webhook:", data)
+
+    try:
+        entry = data["entry"][0]
+        changes = entry["changes"][0]["value"]
+        messages = changes.get("messages")
+
+        if not messages:
+            return {"status": "ignored"}  # Ignore non-message events
+
+        message = messages[0]
+        sender = message["from"]
+        user_message = message["text"]["body"]
+        phone_number_id = changes["metadata"]["phone_number_id"]
+
+        print(f"User ({sender}) said: {user_message}")
+
+        # Generate RAG answer
+        answer = rag_with_cache(user_message, redis_client=redis_client)
+
+        # Prepare reply payload
+        send_url = f"{WHATSAPP_API_URL}/{phone_number_id}/messages"
+        headers = {
+            "Authorization": f"Bearer {VERIFY_TOKEN}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": sender,
+            "type": "text",
+            "text": {"body": answer}
+        }
+
+        # Send reply asynchronously
+        async with httpx.AsyncClient() as client:
+            response = await client.post(send_url, headers=headers, json=payload)
+            print("✅ Sent reply:", response.status_code, response.text)
+
+    except Exception as e:
+        print("❌ Error handling webhook:", str(e))
+
+    return {"status": "processed"}
+
+        ## Simple webhook POST : from Whatsapp Business Account(mobile msg) to verify in RAilway deploy log : 
+        # @app.post("/webhook")
+        # async def receive_whatsapp_message(request: Request):
+        #     data = await request.json()
+        #     print("📩 Incoming WhatsApp message:", data)
+        #     return {"status": "received"}
 
 
 ## run locally with python main.py ... 
