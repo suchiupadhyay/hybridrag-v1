@@ -194,8 +194,8 @@ def generate_with_gemini(query, context_str):
                 Important rules:
                 - ONLY use the context below to answer.
                 - DO NOT include any disclaimers or headers.
-                - ONLY if the context does not contain enough information, you may generate a concise, general answer using your own financial knowledge. 
-                - If the answer is not in your knowledge respond with: "I'm sorry, I don't have enough information to answer that."
+                - ONLY if the context does not contain enough information, you may generate a general answer using your own financial knowledge. 
+                - If not in your knowledge respond with: "I'm sorry, I don't have enough information to answer that."
                 
 
     CONTEXT:
