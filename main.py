@@ -85,6 +85,7 @@ async def receive_whatsapp_message(request: Request):
             "Authorization": f"Bearer {VERIFY_TOKEN}",
             "Content-Type": "application/json"
         }
+        print("🔑 WhatsApp token prefix:", VERIFY_TOKEN[:10])
 
         payload = {
             "messaging_product": "whatsapp",
