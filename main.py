@@ -22,8 +22,9 @@ pong = redis_client.ping()
 print("Redis PING response:", pong)
 
 
-VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN")
+VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN") ## for get
 WHATSAPP_API_URL = "https://graph.facebook.com/v24.0"
+WHATSAPP_TOKEN = os.getenv("WHATSAPP_ACCESS_TOKEN") ## for respond backto user, its permanent token
 
 app = FastAPI()
 
@@ -82,10 +83,10 @@ async def receive_whatsapp_message(request: Request):
         # Prepare reply payload
         send_url = f"{WHATSAPP_API_URL}/{phone_number_id}/messages"
         headers = {
-            "Authorization": f"Bearer {VERIFY_TOKEN}",
+            "Authorization": f"Bearer {WHATSAPP_TOKEN}",
             "Content-Type": "application/json"
         }
-        print("🔑 WhatsApp token prefix:", VERIFY_TOKEN[:10])
+        print("🔑 WhatsApp token prefix:", WHATSAPP_TOKEN[:10])
 
         payload = {
             "messaging_product": "whatsapp",
