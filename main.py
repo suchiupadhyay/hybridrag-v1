@@ -48,22 +48,7 @@ async def verify_webhook(request: Request):
         return PlainTextResponse(content="Verification failed", status_code=403)
 
 
-## root /  and query - RAG chatbot standalone endpoints...setup upto Railway  deployment
-@app.get("/")
-def read_root():
-    return {"message": "Hello from Railway"}
 
-@app.post("/query")
-async def query_endpoint(request: Request):
-    data = await request.json()
-    query = data.get("query")
-    if not query:
-        return {"error": "No query provided"}
-
-    # Call your function with redis_client injected or global
-    answer = rag_with_cache(query, redis_client=redis_client)
-    print("Answer sent back:", answer)  # log before sending response
-    return {"answer": answer}
 
 
 # [Receive WhatsApp Messages]
@@ -126,6 +111,24 @@ async def receive_whatsapp_message(request: Request):
         #     return {"status": "received"}
 
 
+
+
+## root /  and query - RAG chatbot standalone endpoints...setup upto Railway  deployment
+@app.get("/")
+def read_root():
+    return {"message": "Hello from Railway"}
+
+@app.post("/query")
+async def query_endpoint(request: Request):
+    data = await request.json()
+    query = data.get("query")
+    if not query:
+        return {"error": "No query provided"}
+
+    # Call your function with redis_client injected or global
+    answer = rag_with_cache(query, redis_client=redis_client)
+    print("Answer sent back:", answer)  # log before sending response
+    return {"answer": answer}
 ## run locally with python main.py ... 
 # if __name__ == "__main__":
 #     port = int(os.environ.get("PORT", 8000))  # Railway provides a dynamic port
